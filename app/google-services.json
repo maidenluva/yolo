@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "580201816840",
+    "firebase_url": "https://antfinder-23e12.firebaseio.com",
+    "project_id": "antfinder-23e12",
+    "storage_bucket": "antfinder-23e12.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:580201816840:android:1681edb398099a4e",
+        "android_client_info": {
+          "package_name": "com.example.antu.antfinder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "580201816840-4lfnkptkesjfnls8bae18hnk8156nvgj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.antu.antfinder",
+            "certificate_hash": "f1a4a04db8dab26c972964d381a3fcd90a0f6eb4"
+          }
+        },
+        {
+          "client_id": "580201816840-85kfj5motnq7a5fnenpt080upm0pr6r1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCld_0dxC0JytiAu2s3uMHgW-Iw4BLVW4w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "580201816840-85kfj5motnq7a5fnenpt080upm0pr6r1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
