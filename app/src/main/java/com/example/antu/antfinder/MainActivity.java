@@ -33,10 +33,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_main);
-        classLst = (TextView) findViewById(R.id.classLst);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        classLst = (TextView) findViewById(R.id.class_list);
         scheduleRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -44,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
                 // whenever data at this location is updated.
                 ArrayList<HashMap<String,String>> values = (ArrayList<HashMap<String,String>>)dataSnapshot.getValue();
                 String day = getDay();
+                if(day.equals("None"))
+                    day = "M";
                 for(HashMap<String,String> hash: values)
                     avaliableRooms.add(hash.get("Room"));
                 for(HashMap<String,String> hash2: values) {
@@ -58,8 +59,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.w(TAG, "Failed to read value."+ s);
                     classStr += new String(s) +"\n";
                 }
-                Log.w(TAG, "Failue."+ classStr);
-                classLst.setText("hi");
+                classLst.setText(classStr);
             }
 
             @Override

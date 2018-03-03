@@ -7,7 +7,7 @@
     tools:context="com.example.antu.antfinder.MainActivity">
 
     <TextView
-        android:id="@+id/classLst"
+        android:id="@+id/class_list"
         android:layout_width="wrap_content"
         android:layout_height="130dp"
         android:text="Hello World!"
