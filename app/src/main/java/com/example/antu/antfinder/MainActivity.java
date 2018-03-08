@@ -3,6 +3,9 @@ package com.example.antu.antfinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -30,12 +33,35 @@ public class MainActivity extends AppCompatActivity {
     private TextView classLst;
     public String classStr = "";
 
+    private Button indoor_btn;
+    private Button outdoor_btn;
+    private TextView header_txt;
+
+    private TextView building_txt;
+    private EditText building_edit;
+    private TextView room_txt;
+    private EditText room_edit;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         classLst = (TextView) findViewById(R.id.class_list);
+        indoor_btn = findViewById(R.id.indoor_btn);
+        outdoor_btn = findViewById(R.id.outdoor_btn);
+        header_txt = findViewById(R.id.header_txt);
+
+        building_txt = findViewById(R.id.building_txt);
+        building_edit = findViewById(R.id.building_edit);
+        room_txt = findViewById(R.id.room_txt);
+        room_edit = findViewById(R.id.room_edit);
+
+
+
+    }
+    public void searchClasses(View view){
         scheduleRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -43,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
                 // whenever data at this location is updated.
                 ArrayList<HashMap<String,String>> values = (ArrayList<HashMap<String,String>>)dataSnapshot.getValue();
                 String day = getDay();
-                if(day.equals("None"))
-                    day = "M";
                 for(HashMap<String,String> hash: values)
                     avaliableRooms.add(hash.get("Room"));
                 for(HashMap<String,String> hash2: values) {
@@ -69,9 +93,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-
     }
-
     public String getDay(){
         int day = calendar.get(Calendar.DAY_OF_WEEK);
         String dayS = "None";
@@ -113,5 +135,20 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void on_outdoors(View view){
+        outdoor_btn.setVisibility(View.GONE);
+        indoor_btn.setVisibility(view.GONE);
+        header_txt.setText("Is it busy around you");
+    }
+    public void on_indoors(View view){
+        outdoor_btn.setVisibility(view.GONE);
+        indoor_btn.setVisibility(view.GONE);
+        header_txt.setText("Tell us about where you are");
+        building_txt.setVisibility(view.VISIBLE);
+        building_edit.setVisibility(view.VISIBLE);
+        room_txt.setVisibility(view.VISIBLE);
+        room_edit.setVisibility(view.VISIBLE);
     }
 }

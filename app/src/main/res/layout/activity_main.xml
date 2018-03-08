@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.example.antu.antfinder.MainActivity">
 
     <TextView
@@ -16,4 +17,89 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/search_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/outdoor_btn"
+        android:layout_alignStart="@+id/outdoor_btn"
+        android:layout_below="@+id/room_edit"
+        android:layout_marginTop="45dp"
+        android:layout_weight="1"
+        android:onClick="searchClasses"
+        android:text="Button" />
+
+    <TextView
+        android:id="@+id/header_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/search_btn"
+        android:layout_marginLeft="44dp"
+        android:layout_marginStart="44dp"
+        android:layout_toEndOf="@+id/search_btn"
+        android:layout_toRightOf="@+id/search_btn"
+        android:layout_weight="1"
+        android:text="Are you indoors or outdoors?" />
+
+    <Button
+        android:id="@+id/indoor_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/class_list"
+        android:layout_centerHorizontal="true"
+        android:text="Indoors"
+        android:onClick="on_indoors"/>
+
+    <Button
+        android:id="@+id/outdoor_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/indoor_btn"
+        android:layout_alignStart="@+id/indoor_btn"
+        android:layout_below="@+id/indoor_btn"
+        android:text="Outdoors"
+        android:onClick="on_outdoors"/>
+
+    <TextView
+        android:id="@+id/building_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/outdoor_btn"
+        android:layout_centerHorizontal="true"
+        android:text="What building are you in?"
+        android:visibility="invisible" />
+
+    <EditText
+        android:id="@+id/building_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/building_txt"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/room_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/building_edit"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="23dp"
+        android:text="What Room are you  in?"
+        android:visibility="invisible"
+        tools:text="What room are you in " />
+
+    <EditText
+        android:id="@+id/room_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/room_txt"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:visibility="invisible"/>
+
+</RelativeLayout>
