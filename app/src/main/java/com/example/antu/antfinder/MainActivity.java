@@ -1,6 +1,16 @@
 package com.example.antu.antfinder;
 
+import android.*;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Debug;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -16,6 +26,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.KeyStore;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,13 +69,19 @@ public class MainActivity extends AppCompatActivity {
     private EditText room_edit;
 
     private Button srch_btn;
-
+    public static TextView place_lst;
     private Button bug_btn;
     private TextView bug_txt;
     private EditText bug_edit;
     private Button bug_submit;
 
     private  boolean indoors = false;
+
+    public static double lon;
+    public static double lat;
+    private LocationManager locationManager;
+    private LocationListener listener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +101,48 @@ public class MainActivity extends AppCompatActivity {
         bug_txt = findViewById(R.id.bug_txt);
         bug_edit = findViewById(R.id.bug_edit);
         bug_submit = findViewById(R.id.bug_submit);
+
+        place_lst =findViewById(R.id.place_lst);
+
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.INTERNET}
+                        , 10);
+            }
+            return;
+        }
+        Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+
+        listener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                lon = location.getLongitude();
+                lat = location.getLatitude();
+
+                place_lst.setText("\n " + location.getLongitude() + " " + location.getLatitude());
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+                Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(i);
+            }
+        };
+        //configure_button();
+        listener.onLocationChanged(location);
+        new MyDownloadTask().execute();
 
         srch_btn = findViewById(R.id.search_btn);
             userRef.addValueEventListener(new ValueEventListener() {
@@ -204,6 +271,7 @@ public class MainActivity extends AppCompatActivity {
         indoor_btn.setVisibility(view.GONE);
         header_txt.setText("Is it busy around you");
         srch_btn.setVisibility(view.VISIBLE);
+
     }
     public void on_indoors(View view){
         outdoor_btn.setVisibility(view.GONE);
@@ -248,4 +316,133 @@ public class MainActivity extends AppCompatActivity {
     double deg2rad(double deg) {
         return deg * (Math.PI/180);
     }
+
 }
+class MyDownloadTask extends AsyncTask<Void,Void,Void>
+{
+
+    //public static String result;
+    private String name;
+
+    ArrayList<String> locationNames = new ArrayList<String>();
+    ArrayList<String> address = new ArrayList<String>();
+    protected void onPreExecute() {
+        //display progress dialog.
+
+    }
+    protected Void doInBackground(Void... params) {
+        try{
+            //URL url = new URL("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=33.6486988,-117.84201106&radius=500&opennow=true&types=cafe&key=AIzaSyBDVo38fszl9yWbDIWfsf-GGSY59gce4os");
+            String API = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+Double.toString(MainActivity.lat)+","+Double.toString(MainActivity.lon)+"&radius=500&opennow=true&types=cafe&key=AIzaSyBDVo38fszl9yWbDIWfsf-GGSY59gce4os";
+            URL url = new URL(API);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setDoOutput(true);
+
+            //String responseMsg = con.getResponseMessage();
+            //int response = con.getResponseCode();
+
+            InputStream in = new BufferedInputStream(con.getInputStream());
+            Reader reader = new InputStreamReader(in, "UTF-8");
+            char[] buffer = new char[4096];
+
+            StringBuilder builder = new StringBuilder();
+            int len;
+            while ((len = reader.read(buffer)) > 0) {
+                builder.append(buffer, 0, len);
+            }
+
+            JSONObject jsonObject = new JSONObject(builder.toString());
+            JSONArray list = (JSONArray)jsonObject.get("results");
+
+            //String haha = jsonObject.getString("status");
+
+
+
+            Log.d("plz yes",Integer.toString(list.length()));
+            int numOpens = list.length();
+
+
+            // locationNames = new String[numOpens];
+            for ( int i = 0 ; i < numOpens ; ++i)
+            {   locationNames.add(list.getJSONObject(i).getString("name"));
+                address.add(list.getJSONObject(i).getString("vicinity"));
+                //locationNames[i] =list.getJSONObject(i).getString("name");
+            }
+            name = list.getJSONObject(1).getString("name");
+
+
+
+            Log.d("plz yes",name);
+            con.disconnect();
+
+            API = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+Double.toString(MainActivity.lat)+","+Double.toString(MainActivity.lon)+"&radius=500&opennow=true&types=library&key=AIzaSyBDVo38fszl9yWbDIWfsf-GGSY59gce4os";
+            url = new URL(API);
+            //url = new URL("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=33.6486988,-117.84201106&radius=500&opennow=true&types=library&key=AIzaSyBDVo38fszl9yWbDIWfsf-GGSY59gce4os");
+            con = (HttpURLConnection) url.openConnection();
+            con.setDoOutput(true);
+            //responseMsg = con.getResponseMessage();
+            //response = con.getResponseCode();
+
+            in = new BufferedInputStream(con.getInputStream());
+            reader = new InputStreamReader(in, "UTF-8");
+            buffer = new char[4096];
+
+            builder = new StringBuilder();
+
+            while ((len = reader.read(buffer)) > 0) {
+                builder.append(buffer, 0, len);
+            }
+
+            jsonObject = new JSONObject(builder.toString());
+            list = (JSONArray)jsonObject.get("results");
+            //haha = jsonObject.getString("status");
+
+
+
+            Log.d("plz yes",Integer.toString(list.length()));
+
+            numOpens = list.length();
+
+
+            for ( int i = 0; i < numOpens ; ++i)
+            {
+                locationNames.add(list.getJSONObject(i).getString("name"));
+                address.add(list.getJSONObject(i).getString("vicinity"));
+            }
+            name = list.getJSONObject(0).getString("name");
+
+
+
+            Log.d("plz yes",name);
+            con.disconnect();
+
+            // so index to access which eleemnt, so cha or tea is 0, starbuks i 1... etc, then get wahtever is when u wanna get the info
+
+
+            //JSONArray array= new JSONArray(builder.toString());
+        }
+        catch (Exception ex){
+            //Log.d("plz no",":(");
+            Log.e("plz no","ooo",ex);
+        }
+        return null;
+    }
+
+    protected void onPostExecute(Void result) {
+        //heare result is value you return from doInBackground() method
+        //this is work on UI thread
+        MainActivity.place_lst.append("\n");
+        int len = locationNames.size();
+        for(int i = 0; i<len; ++i) {
+            MainActivity.place_lst.append(locationNames.get(i) + "\n");
+            MainActivity.place_lst.append(address.get(i)+"\n");
+
+        }
+    }
+
+
+
+
+
+}
+
