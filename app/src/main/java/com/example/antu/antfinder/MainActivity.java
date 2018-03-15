@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     final FirebaseDatabase db = FirebaseDatabase.getInstance();
     final DatabaseReference scheduleRef = db.getReference("schedule"); //chsngr libsry nsme hrtr
     final DatabaseReference userRef = db.getReference("Userlocation");
+    final DatabaseReference roomRef = db.getReference("Rooms");
     final String TAG = "YO ERROR:";
     ArrayList<HashMap<String,String>> todayList = new ArrayList<HashMap<String,String>>();
     HashSet<String> avaliableRooms = new HashSet<String>();
@@ -171,6 +172,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    public boolean isPopular(String s, int thresh){
+        int count = 0;
+        for(String sub :popList){
+            if(sub.length() > 2 && s.toLowerCase().contains(sub.toLowerCase()))
+                count++;
+        }
+        return count > thresh;
+    }
     public void searchClasses(View view){
         header_txt.setText("Here are the aviable clases:");
         srch_btn.setVisibility(view.GONE);
@@ -193,7 +202,8 @@ public class MainActivity extends AppCompatActivity {
                 String day = getDay();
                 day = "W";
                 for(HashMap<String,String> hash: values){
-                    if( !(Collections.frequency(popList, hash.get("Room"))> 1))
+                    //if( !(Collections.frequency(popList, hash.get("Room"))> 1))
+                    if(!isPopular(hash.get("Room"),1))
                         avaliableRooms.add(hash.get("Room"));
                 }
                 for(HashMap<String,String> hash2: values) {
@@ -269,8 +279,35 @@ public class MainActivity extends AppCompatActivity {
     public void on_outdoors(View view){
         outdoor_btn.setVisibility(View.GONE);
         indoor_btn.setVisibility(view.GONE);
-        header_txt.setText("Is it busy around you");
+        header_txt.setText("Thanks, we will get your location");
         srch_btn.setVisibility(view.VISIBLE);
+        roomRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists())
+                    return;
+                ArrayList<HashMap<String, String>> values = (ArrayList<HashMap<String, String>>) dataSnapshot.getValue();
+                int count = 0;
+                for(HashMap<String,String> h :values){
+                    double arLat = Double.parseDouble(h.get("lat"));
+                    double arlng = Double.parseDouble(h.get("lng"));
+                    Log.w("auh",Double.toString(getDistanceFromLatLonInKm(lat,lon,arlng,arlng)));
+                    if(getDistanceFromLatLonInKm(lat,lon,arlng,arlng) < 170000){
+                        calendar.add(Calendar.MILLISECOND,count);
+                        count ++ ;
+                        Building b = new Building(h.get("name"), calendar.getTime().toString());
+                        userRef.child(calendar.getTime().toString()).setValue(new Building(h.get("name"),calendar.getTime().toString()));
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
 
     }
     public void on_indoors(View view){

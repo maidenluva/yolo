@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AntFinder.iml" filepath="$PROJECT_DIR$/AntFinder.iml" />
+      <module fileurl="file://C:\Users\azadm_000\AndroidStudioProjects\yolo\AntFinder.iml" filepath="C:\Users\azadm_000\AndroidStudioProjects\yolo\AntFinder.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\azadm_000\AndroidStudioProjects\yolo\app\app.iml" filepath="C:\Users\azadm_000\AndroidStudioProjects\yolo\app\app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/yolo.iml" filepath="$PROJECT_DIR$/yolo.iml" />
     </modules>
   </component>
 </project>
