@@ -1,105 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:columnCount="2"
+    android:orientation="horizontal"
+    android:rowCount="2"
     tools:context="com.example.antu.antfinder.MainActivity">
 
-    <TextView
-        android:id="@+id/class_list"
-        android:layout_width="wrap_content"
-        android:layout_height="130dp"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/search_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/outdoor_btn"
-        android:layout_alignStart="@+id/outdoor_btn"
-        android:layout_below="@+id/room_edit"
-        android:layout_marginTop="45dp"
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:onClick="searchClasses"
-        android:text="Button" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/header_txt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/search_btn"
-        android:layout_marginLeft="44dp"
-        android:layout_marginStart="44dp"
-        android:layout_toEndOf="@+id/search_btn"
-        android:layout_toRightOf="@+id/search_btn"
+        <TextView
+            android:id="@+id/place_lst"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:text="TextView" />
+
+        <Button
+            android:id="@+id/bug-btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bug report"
+            android:onClick="bug_report"/>
+
+        <TextView
+            android:id="@+id/bug_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enter the room that is unavaliable"
+            android:visibility="invisible"/>
+
+        <EditText
+            android:id="@+id/bug_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:visibility="invisible"/>
+
+        <Button
+            android:id="@+id/bug_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:visibility="invisible"
+            android:onClick="bug_submit"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:text="Are you indoors or outdoors?" />
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/indoor_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/class_list"
-        android:layout_centerHorizontal="true"
-        android:text="Indoors"
-        android:onClick="on_indoors"/>
+        <TextView
+            android:id="@+id/class_list"
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            android:layout_below="@+id/search_btn"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="21dp"
+            android:maxLines = "20"
+            android:scrollbars = "vertical"/>
 
-    <Button
-        android:id="@+id/outdoor_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/indoor_btn"
-        android:layout_alignStart="@+id/indoor_btn"
-        android:layout_below="@+id/indoor_btn"
-        android:text="Outdoors"
-        android:onClick="on_outdoors"/>
+        <Button
+            android:id="@+id/search_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/outdoor_btn"
+            android:layout_alignRight="@+id/outdoor_btn"
+            android:layout_below="@+id/room_edit"
+            android:layout_column="1"
+            android:layout_row="0"
+            android:onClick="searchClasses"
+            android:text="Search for classes"
+            android:visibility="invisible"/>
 
-    <TextView
-        android:id="@+id/building_txt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/outdoor_btn"
-        android:layout_centerHorizontal="true"
-        android:text="What building are you in?"
-        android:visibility="invisible" />
+        <TextView
+            android:id="@+id/header_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="20dp"
+            android:text="Are you indoors or outdoors?" />
 
-    <EditText
-        android:id="@+id/building_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/building_txt"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="12dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:visibility="invisible"/>
+        <Button
+            android:id="@+id/indoor_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/outdoor_btn"
+            android:layout_alignRight="@+id/outdoor_btn"
+            android:layout_below="@+id/header_txt"
+            android:onClick="on_indoors"
+            android:text="Indoors" />
 
-    <TextView
-        android:id="@+id/room_txt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/building_edit"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="23dp"
-        android:text="What Room are you  in?"
-        android:visibility="invisible"
-        tools:text="What room are you in " />
+        <Button
+            android:id="@+id/outdoor_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/indoor_btn"
+            android:layout_centerHorizontal="true"
+            android:onClick="on_outdoors"
+            android:text="Outdoors" />
 
-    <EditText
-        android:id="@+id/room_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/room_txt"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="28dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:visibility="invisible"/>
+        <TextView
+            android:id="@+id/building_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/outdoor_btn"
+            android:layout_centerHorizontal="true"
+            android:text="What building are you in?"
+            android:visibility="invisible" />
 
-</RelativeLayout>
+        <EditText
+            android:id="@+id/building_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/building_txt"
+            android:layout_marginTop="12dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/room_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/building_edit"
+            android:layout_centerHorizontal="true"
+            android:text="What Room are you  in?"
+            android:visibility="invisible"
+            tools:text="What room are you in " />
+
+        <EditText
+            android:id="@+id/room_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/room_txt"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+</LinearLayout>

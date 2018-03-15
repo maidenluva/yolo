@@ -1,7 +1,9 @@
 package com.example.antu.antfinder;
 
+import android.os.Debug;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,22 +16,27 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.security.KeyStore;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     final FirebaseDatabase db = FirebaseDatabase.getInstance();
-    final DatabaseReference scheduleRef = db.getReference("schedule");
+    final DatabaseReference scheduleRef = db.getReference("schedule"); //chsngr libsry nsme hrtr
+    final DatabaseReference userRef = db.getReference("Userlocation");
     final String TAG = "YO ERROR:";
     ArrayList<HashMap<String,String>> todayList = new ArrayList<HashMap<String,String>>();
     HashSet<String> avaliableRooms = new HashSet<String>();
     Calendar calendar = Calendar.getInstance();
 
+    public ArrayList<String> popList = new ArrayList<String>();
     private TextView classLst;
     public String classStr = "";
 
@@ -42,7 +49,14 @@ public class MainActivity extends AppCompatActivity {
     private TextView room_txt;
     private EditText room_edit;
 
+    private Button srch_btn;
 
+    private Button bug_btn;
+    private TextView bug_txt;
+    private EditText bug_edit;
+    private Button bug_submit;
+
+    private  boolean indoors = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +72,51 @@ public class MainActivity extends AppCompatActivity {
         room_txt = findViewById(R.id.room_txt);
         room_edit = findViewById(R.id.room_edit);
 
+        bug_btn = findViewById(R.id.bug_btn);
+        bug_txt = findViewById(R.id.bug_txt);
+        bug_edit = findViewById(R.id.bug_edit);
+        bug_submit = findViewById(R.id.bug_submit);
+
+        srch_btn = findViewById(R.id.search_btn);
+            userRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(!dataSnapshot.exists())
+                        return;
+                    HashMap<String, HashMap<String, String>> values = (HashMap<String, HashMap<String, String>>) dataSnapshot.getValue();
+                    Date cur = calendar.getTime();
+                    for (Map.Entry<String, HashMap<String, String>> entry : values.entrySet()) {
+
+                        Date t1 = new Date(entry.getKey());
+                        if(cur.getTime() - t1.getTime() > 60000)
+                            userRef.child(entry.getKey()).removeValue();
+                        else
+                            popList.add(entry.getValue().get("name"));
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+                    Log.w(TAG, "Failed to read value.", error.toException());
+                }
+            });
 
 
     }
     public void searchClasses(View view){
+        header_txt.setText("Here are the aviable clases:");
+        srch_btn.setVisibility(view.GONE);
+        building_txt.setVisibility(view.GONE);
+        building_edit.setVisibility(view.GONE);
+        room_txt.setVisibility(view.GONE);
+        room_edit.setVisibility(view.GONE);
+        if(indoors){
+            String building = building_edit.getText().toString();
+            Building b = new Building(building,calendar.getTime().toString());
+            userRef.child(calendar.getTime().toString()).setValue(new Building(building,calendar.getTime().toString()));
+
+        }
         scheduleRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -69,18 +124,24 @@ public class MainActivity extends AppCompatActivity {
                 // whenever data at this location is updated.
                 ArrayList<HashMap<String,String>> values = (ArrayList<HashMap<String,String>>)dataSnapshot.getValue();
                 String day = getDay();
-                for(HashMap<String,String> hash: values)
-                    avaliableRooms.add(hash.get("Room"));
+                day = "W";
+                for(HashMap<String,String> hash: values){
+                    if( !(Collections.frequency(popList, hash.get("Room"))> 1))
+                        avaliableRooms.add(hash.get("Room"));
+                }
                 for(HashMap<String,String> hash2: values) {
-                    if(hash2.get(day).equals("T")){
+                    if(hash2.get("Room").length() < 2){
+                        avaliableRooms.remove(hash2.get("Room"));
+                    }
+                    if(hash2.get(day).equals("T")) {
                         todayList.add(hash2);
-                        if(!isTimeBetween(hash2.get("startTime"),hash2.get("endTime"))) {
+                        if (isTimeBetween(hash2.get("startTime"), hash2.get("endTime"))) {
                             avaliableRooms.remove(hash2.get("Room"));
                         }
                     }
                 }
+                avaliableRooms.remove("F 12:00-12:50p");
                 for(String s : avaliableRooms){
-                    Log.w(TAG, "Failed to read value."+ s);
                     classStr += new String(s) +"\n";
                 }
                 classLst.setText(classStr);
@@ -129,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
             calendar2.add(Calendar.DATE, 1);
 
             Date currentTime = calendar.getTime();
+            currentTime = new Date(2018, 2, 21, 11, 45, 0);
             return currentTime.after(t1) && currentTime.before(t2);
         }
         catch(ParseException e){
@@ -141,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
         outdoor_btn.setVisibility(View.GONE);
         indoor_btn.setVisibility(view.GONE);
         header_txt.setText("Is it busy around you");
+        srch_btn.setVisibility(view.VISIBLE);
     }
     public void on_indoors(View view){
         outdoor_btn.setVisibility(view.GONE);
@@ -150,5 +213,39 @@ public class MainActivity extends AppCompatActivity {
         building_edit.setVisibility(view.VISIBLE);
         room_txt.setVisibility(view.VISIBLE);
         room_edit.setVisibility(view.VISIBLE);
+        indoors = true;
+        srch_btn.setVisibility(view.VISIBLE);
+
+    }
+    public void bug_report(View view){
+        bug_txt.setVisibility(view.VISIBLE);
+        bug_edit.setVisibility(View.VISIBLE);
+        bug_submit.setVisibility(View.VISIBLE);
+        bug_btn.setVisibility(View.GONE);
+    }
+    public void bug_submit(View view){
+        String s = bug_edit.getText().toString();
+        Building b = new Building(s,calendar.getTime().toString());
+        userRef.child(calendar.getTime().toString()).setValue(new Building(s,calendar.getTime().toString()));
+        bug_edit.setVisibility(View.GONE);
+        bug_submit.setVisibility(View.GONE);
+        bug_txt.setText("Thank you for your report");
+    }
+    double getDistanceFromLatLonInKm(double lat1,double lon1, double lat2,double lon2) {
+        long R = 6371; // Radius of the earth in km
+        double dLat = deg2rad(lat2-lat1);  // deg2rad below
+        double dLon = deg2rad(lon2-lon1);
+        double a =
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                                Math.sin(dLon/2) * Math.sin(dLon/2)
+                ;
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double d = R * c; // Distance in km
+        return d;
+    }
+
+    double deg2rad(double deg) {
+        return deg * (Math.PI/180);
     }
 }
