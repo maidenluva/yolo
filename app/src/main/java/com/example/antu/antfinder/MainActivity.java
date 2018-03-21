@@ -1,6 +1,7 @@
 package com.example.antu.antfinder;
 
 import android.*;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -120,8 +122,6 @@ public class MainActivity extends AppCompatActivity {
             public void onLocationChanged(Location location) {
                 lon = location.getLongitude();
                 lat = location.getLatitude();
-
-                place_lst.setText("\n " + location.getLongitude() + " " + location.getLatitude());
             }
 
             @Override
@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 avaliableRooms.remove("F 12:00-12:50p");
                 for(String s : avaliableRooms){
-                    classStr += new String(s) +"\n";
+                    classStr += new String(s) +"\n\n";
                 }
                 classLst.setText(classStr);
             }
@@ -327,6 +327,7 @@ public class MainActivity extends AppCompatActivity {
         bug_edit.setVisibility(View.VISIBLE);
         bug_submit.setVisibility(View.VISIBLE);
         bug_btn.setVisibility(View.GONE);
+        place_lst.setVisibility(View.GONE);
     }
     public void bug_submit(View view){
         String s = bug_edit.getText().toString();
@@ -335,6 +336,9 @@ public class MainActivity extends AppCompatActivity {
         bug_edit.setVisibility(View.GONE);
         bug_submit.setVisibility(View.GONE);
         bug_txt.setText("Thank you for your report");
+        InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.hideSoftInputFromWindow(bug_edit.getWindowToken(), 0);
+        place_lst.setVisibility(View.VISIBLE);
     }
     double getDistanceFromLatLonInKm(double lat1,double lon1, double lat2,double lon2) {
         long R = 6371; // Radius of the earth in km
@@ -472,7 +476,7 @@ class MyDownloadTask extends AsyncTask<Void,Void,Void>
         int len = locationNames.size();
         for(int i = 0; i<len; ++i) {
             MainActivity.place_lst.append(locationNames.get(i) + "\n");
-            MainActivity.place_lst.append(address.get(i)+"\n");
+            MainActivity.place_lst.append("\t"+address.get(i)+"\n\n");
 
         }
     }

@@ -8,9 +8,10 @@
     android:columnCount="2"
     android:orientation="horizontal"
     android:rowCount="2"
+    android:background="@drawable/lake_sunset"
     tools:context="com.example.antu.antfinder.MainActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -19,30 +20,38 @@
         <TextView
             android:id="@+id/place_lst"
             android:layout_width="match_parent"
-            android:layout_height="281dp"
-            android:text="TextView" />
+            android:layout_height="340dp"
+            android:text=""
+            android:paddingTop="60dp"
+            android:fontFamily="serif-monospace"
+            android:textColor="@color/colorAccent"
+            android:textSize="16dp"
+            android:textStyle="italic"/>
 
         <Button
             android:id="@+id/bug-btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Bug report"
-            android:onClick="bug_report"/>
+            android:onClick="bug_report"
+            android:layout_alignParentBottom="true"/>
 
         <TextView
             android:id="@+id/bug_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Enter the room that is unavaliable"
-            android:visibility="invisible"/>
+            android:visibility="invisible"
+            android:layout_above="@+id/bug_edit"/>
 
         <EditText
             android:id="@+id/bug_edit"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:visibility="invisible"/>
+            android:visibility="invisible"
+            android:layout_above="@+id/bug_submit"/>
 
         <Button
             android:id="@+id/bug_submit"
@@ -50,8 +59,9 @@
             android:layout_height="wrap_content"
             android:text="Submit"
             android:visibility="invisible"
-            android:onClick="bug_submit"/>
-    </LinearLayout>
+            android:onClick="bug_submit"
+            android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -62,25 +72,32 @@
         <TextView
             android:id="@+id/class_list"
             android:layout_width="wrap_content"
-            android:layout_height="130dp"
+            android:layout_height="200dp"
             android:layout_below="@+id/search_btn"
-            android:layout_centerHorizontal="true"
             android:layout_marginTop="21dp"
             android:maxLines = "20"
-            android:scrollbars = "vertical"/>
+            android:scrollbars = "vertical"
+            android:fontFamily="serif-monospace"
+            android:textColor="#D3D3D3"
+            android:textSize="16dp"
+            android:textStyle="italic"
+            android:shadowColor="@color/colorAccent"/>
 
         <Button
             android:id="@+id/search_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/outdoor_btn"
             android:layout_alignRight="@+id/outdoor_btn"
             android:layout_below="@+id/room_edit"
             android:layout_column="1"
             android:layout_row="0"
+            android:layout_centerVertical="true"
             android:onClick="searchClasses"
             android:text="Search for classes"
-            android:visibility="invisible"/>
+            android:visibility="invisible"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"/>
 
         <TextView
             android:id="@+id/header_txt"
@@ -89,12 +106,14 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="20dp"
-            android:text="Are you indoors or outdoors?" />
+            android:layout_marginTop="80dp"
+            android:text="Are you indoors or outdoors?"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"/>
 
         <Button
             android:id="@+id/indoor_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/outdoor_btn"
             android:layout_alignRight="@+id/outdoor_btn"
@@ -104,7 +123,7 @@
 
         <Button
             android:id="@+id/outdoor_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/indoor_btn"
             android:layout_centerHorizontal="true"
@@ -118,7 +137,10 @@
             android:layout_below="@+id/outdoor_btn"
             android:layout_centerHorizontal="true"
             android:text="What building are you in?"
-            android:visibility="invisible" />
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:visibility="invisible"
+            android:layout_marginTop="20dp"/>
 
         <EditText
             android:id="@+id/building_edit"
@@ -130,7 +152,9 @@
             android:layout_marginTop="12dp"
             android:ems="10"
             android:inputType="textPersonName"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:backgroundTint="#FFFFFF"
+            android:textColor="#FFFFFF"/>
 
         <TextView
             android:id="@+id/room_txt"
@@ -140,6 +164,8 @@
             android:layout_centerHorizontal="true"
             android:text="What Room are you  in?"
             android:visibility="invisible"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
             tools:text="What room are you in " />
 
         <EditText
@@ -151,7 +177,9 @@
             android:layout_below="@+id/room_txt"
             android:ems="10"
             android:inputType="textPersonName"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:backgroundTint="#FFFFFF"
+            android:textColor="#FFFFFF"/>
     </RelativeLayout>
 
 </LinearLayout>
